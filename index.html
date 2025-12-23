@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lovely - Connect with your Partner</title>
+    <meta name="theme-color" content="#FFF5F8">
+    <style>
+        :root {
+            /* Colors from lib/common/theme/app_theme.dart */
+            --primary: #EC407A;       /* Rose Pink */
+            --secondary: #F8BBD0;     /* Soft Blush */
+            --accent: #8E2456;        /* Deep Wine */
+            --bg: #FFF5F8;            /* Creamy Pink */
+            --surface: #FFFFFF;       /* White */
+            --text-main: #1A0F14;     /* Plum Black */
+            --text-sub: #8E2456;      /* Deep Wine */
+        }
+
+        body {
+            background-color: var(--bg);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+            color: var(--text-main);
+        }
+
+        .container {
+            padding: 24px;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        /* Logo Area */
+        .logo-icon {
+            font-size: 80px;
+            color: var(--primary);
+            margin-bottom: 16px;
+            filter: drop-shadow(0 4px 6px rgba(236, 64, 122, 0.3));
+        }
+
+        h1 {
+            color: var(--accent);
+            font-size: 32px;
+            margin: 0 0 12px 0;
+            font-weight: 800;
+        }
+
+        p {
+            color: var(--text-main);
+            font-size: 18px;
+            line-height: 1.5;
+            margin-bottom: 32px;
+            opacity: 0.8;
+        }
+
+        /* Card Style */
+        .card {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 32px 24px;
+            box-shadow: 0 10px 30px rgba(142, 36, 86, 0.1);
+            margin-bottom: 24px;
+        }
+
+        /* Buttons */
+        .btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            padding: 18px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            box-sizing: border-box;
+            cursor: pointer;
+            margin-bottom: 16px;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 4px 15px rgba(236, 64, 122, 0.4);
+            border: none;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        /* Status Text */
+        #status-text {
+            font-size: 14px;
+            color: var(--text-sub);
+            margin-top: 16px;
+            font-weight: 600;
+            min-height: 20px;
+        }
+
+        /* Hide logic until loaded */
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="logo-icon">💕</div>
+        <h1>Lovely</h1>
+        
+        <div class="card">
+            <p id="description">The app for couples to connect, share, and love.</p>
+
+            <div id="action-area">
+                <a href="/download" class="btn btn-primary" id="main-btn">
+                    Download App
+                </a>
+                <a href="#" class="btn btn-outline hidden" id="secondary-btn">
+                    Open Manually
+                </a>
+            </div>
+
+            <div id="status-text"></div>
+        </div>
+    </div>
+
+    <script>
+        window.onload = function() {
+            // 1. Get query parameters
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get("linkingCode");
+            
+            const mainBtn = document.getElementById('main-btn');
+            const secondaryBtn = document.getElementById('secondary-btn');
+            const statusText = document.getElementById('status-text');
+            const description = document.getElementById('description');
+
+            if (code) {
+                // --- CASE A: User has a Linking Code ---
+                
+                // Construct the deep link URL (Custom Scheme)
+                const appUrl = "lovely://lovely.app/?linkingCode=" + code;
+                
+                // Update UI for redirection
+                description.innerText = "Connecting you with your partner...";
+                mainBtn.innerText = "Open Lovely App";
+                mainBtn.href = appUrl; // Set button to open app
+                
+                // Show status
+                statusText.innerText = "Attempting to open app...";
+
+                // Attempt auto-redirect
+                setTimeout(() => {
+                    window.location.href = appUrl;
+                }, 500);
+
+                // Fallback logic: If they are still here after 3 seconds,
+                // assume app isn't installed and show download options.
+                setTimeout(() => {
+                    statusText.innerText = "App not opening? Make sure it's installed.";
+                    secondaryBtn.innerText = "Download App";
+                    secondaryBtn.href = "/download";
+                    secondaryBtn.classList.remove("hidden");
+                }, 3000);
+
+            } else {
+                // --- CASE B: Just visiting the site ---
+                // Keep default "Download App" button
+            }
+        };
+    </script>
+</body>
+</html>

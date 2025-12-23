@@ -1,0 +1,15 @@
+# Redirects for lovely.app
+
+# 1. The Download Shortcut
+# Redirects /download to the Netlify Function which queries the DB
+[[redirects]]
+  from = "/download"
+  to = "/.netlify/functions/download"
+  status = 200
+  force = true
+
+# 2. Fallback for Single Page Apps (Optional but good practice)
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
